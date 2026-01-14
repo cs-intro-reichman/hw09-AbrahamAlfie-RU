@@ -5,6 +5,15 @@
  *  mention the existence of the Node objects). */
 public class List {
 
+    public static void main(String[] args) {
+        List test = new List();
+        test.addFirst('b');
+        test.addFirst('a');
+        System.out.println(test.getFirst());
+
+        // System.out.println(test.indexOf('b'));
+    }
+
     // Points to the first node in this list
     private Node first;
 
@@ -24,13 +33,16 @@ public class List {
 
     /** Returns the CharData of the first element in this list. */
     public CharData getFirst() {
-        // Your code goes here
         return first.cp;
     }
 
     /** GIVE Adds a CharData object with the given character to the beginning of this list. */
     public void addFirst(char chr) {
-        // Your code goes here
+        CharData newCharData = new CharData(chr);
+        Node newNode = new Node(newCharData);
+        newNode.next = first;
+        first = newNode;
+        size++;
     }
     
     /** GIVE Textual representation of this list. */
@@ -43,7 +55,15 @@ public class List {
      *  that has the same chr value as the given char,
      *  or -1 if there is no such object in this list. */
     public int indexOf(char chr) {
-        // Your code goes here
+        Node current = first;
+        int index = 0;
+        while (current != null) {
+            if (current.cp.chr == chr) {
+                return index;
+            }
+            current = current.next;
+            index++;
+        }
         return -1;
     }
 
