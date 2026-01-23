@@ -33,8 +33,27 @@ public class LanguageModel {
 
     /** Builds a language model from the text in the given file (the corpus). */
 	public void train(String fileName) {
-		// Your code goes here
-	}
+        In in = new In(fileName);
+        String window = "";
+        for (int i = 0; i < windowLength; i++) {
+            if (in.isEmpty())
+                return;
+            window += in.readChar();
+        }
+        while (!(in.isEmpty())) {
+            char ch = in.readChar();
+            List probs = CharDataMap.get(window);
+            if (probs == null) {
+                probs = new List();
+                CharDataMap.put(window, probs);
+            }
+            probs.update(ch);
+            window = window.substring(1) + ch;
+        }
+        for (List probs : CharDataMap.values()) {
+            calculateProbabilities(probs);
+        }
+    }
 
     // Computes and sets the probabilities (p and cp fields) of all the
 	// characters in the given list. */
@@ -73,8 +92,22 @@ public class LanguageModel {
 	 * @return the generated text
 	 */
 	public String generate(String initialText, int textLength) {
-		// Your code goes here
-        return "";
+	    if (initialText.length() < windowLength) {
+            return initialText;
+        }
+        String window = initialText.substring(initialText.length() - windowLength);
+        String genText = initialText;
+        int limit = initialText.length() + textLength;
+
+        while (genText.length() < limit) {
+            List probs = CharDataMap.get(window);
+            if (probs == null)
+                break;
+            char nextChar = getRandomChar(probs);
+            genText += nextChar;
+            window = genText.substring(genText.length() - windowLength);
+        }
+        return genText;
 	}
 
     /** Returns a string representing the map of this language model. */
@@ -86,8 +119,4 @@ public class LanguageModel {
 		}
 		return str.toString();
 	}
-
-//     public static void main(String[] args) {
-// 		// Your code goes here
-//     }
 }
