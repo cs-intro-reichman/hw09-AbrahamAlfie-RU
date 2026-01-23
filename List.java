@@ -75,12 +75,10 @@ public class List {
      *  given chr to the beginning of this list. */
     public void update(char chr) {
         int index = indexOf(chr);
-        if (index == -1) {
-            addFirst(chr);
-            size++;
+        if (index != -1) {
+            get(index).count++;
         } else {
-            CharData charData = get(index);
-            charData.count++;
+            addFirst(chr);
         }
     }
 

@@ -76,13 +76,15 @@ public class LanguageModel {
 
     // Returns a random character from the given probabilities list.
 	char getRandomChar(List probs) {
-		 double random = randomGenerator.nextDouble();
+        double random = randomGenerator.nextDouble();
         for (int i = 0; i < probs.getSize(); i++) {
             CharData cd = probs.get(i);
-            if (random < cd.cp) return cd.chr;
+            if (random < cd.cp) {
+                return cd.chr;
+            }
         }
         return probs.get(probs.getSize() - 1).chr;
-	}
+    }
 
     /**
 	 * Generates a random text, based on the probabilities that were learned during training. 
@@ -119,4 +121,24 @@ public class LanguageModel {
 		}
 		return str.toString();
 	}
+
+public static void main(String[] args) {
+    int windowLength = Integer.parseInt(args[0]);
+    String initialText = args[1];
+    int generatedTextLength = Integer.parseInt(args[2]);
+    Boolean randomGeneration = args[3].equals("random");
+    String fileName = args[4];
+    // Create the LanguageModel object
+    LanguageModel lm;
+    if (randomGeneration)
+        lm = new LanguageModel(windowLength);
+    else
+        lm = new LanguageModel(windowLength, 20);
+    // Trains the model, creating the map.
+    lm.train(fileName);
+    // Generates text, and prints it.
+    System.out.println(lm.generate(initialText, generatedTextLength));
 }
+
+}
+
